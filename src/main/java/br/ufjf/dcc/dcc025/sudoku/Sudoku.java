@@ -11,12 +11,17 @@ import java.util.Scanner;
  * @author Gabriel
  */
 public class Sudoku {
+    public static boolean jogarNovamente = false;
     
-    public static void main(String[] args) {       
+    public static void main(String[] args) {        
         Scanner teclado = new Scanner(System.in); 
-        Tabuleiro tabela = new Tabuleiro();        
-        configurarJogo(tabela, teclado);
-        jogar(tabela, teclado);
+        do {            
+            Tabuleiro tabela = new Tabuleiro();        
+            configurarJogo(tabela, teclado);
+            jogar(tabela, teclado);  
+        } while (jogarNovamente);        
+        
+        System.out.println("Obrigado por jogar!");
     }
     
     private static void configurarJogo(Tabuleiro tabela, Scanner teclado){
@@ -32,6 +37,7 @@ public class Sudoku {
         
         if(escolha == 1){
             System.out.println("Quantos números você deseja gerar?");
+            System.out.print("Quantidade: ");
             int numeros = teclado.nextInt();
             int jogadas = 0;
             int tentativas = 0;
@@ -85,21 +91,30 @@ public class Sudoku {
                case 3 -> { tabela.ImprimirErros(); }
                case 4 -> { ReceberDica(tabela, teclado); }
                case 5 -> { 
-                   System.out.println("Obrigado por jogar!");
-                   System.exit(0);
+                   jogarNovamente = false;
+                   return;
                }
            } 
         }
         
         System.out.println("Parabéns campeão, você completou o jogo!");
+        int escolha = 0;        
+        while(escolha != 1 && escolha != 2){
+            System.out.println("Deseja jogar novamente?");
+            System.out.println("  1) Sim");
+            System.out.println("  2) Não");
+            System.out.print("Opção: ");
+            escolha = teclado.nextInt();
+        }
+        jogarNovamente = escolha == 1;
     }
     
     private static void AdicionarJogada(Tabuleiro tabela, Scanner teclado, boolean leituraUnica){
         while(true){
             System.out.print("Informe os valores no padrão ([linha],[coluna],[valor]): ");
-            String entrada = teclado.next();
+            String entrada = teclado.next().trim();
             
-            if(entrada.trim().equalsIgnoreCase("sair"))
+            if(entrada.equalsIgnoreCase("sair"))
                 return;
             
             String[] substrings = entrada.split("\\)");
